@@ -1,0 +1,54 @@
+services:
+  - type: web
+    name: aimeos-isolated-preview
+    runtime: docker
+    branch: demo/render-preview
+    plan: free
+    region: oregon
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /ready
+    autoDeploy: false
+    envVars:
+      - key: PORT
+        value: "10000"
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_KEY_SEED
+        generateValue: true
+      - key: DEMO_ADMIN_EMAIL
+        sync: false
+      - key: DEMO_ADMIN_PASSWORD
+        sync: false
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromDatabase: {name: aimeos-preview-db, property: host}
+      - key: DB_PORT
+        fromDatabase: {name: aimeos-preview-db, property: port}
+      - key: DB_DATABASE
+        fromDatabase: {name: aimeos-preview-db, property: database}
+      - key: DB_USERNAME
+        fromDatabase: {name: aimeos-preview-db, property: user}
+      - key: DB_PASSWORD
+        fromDatabase: {name: aimeos-preview-db, property: password}
+      - key: CACHE_DRIVER
+        value: file
+      - key: SESSION_DRIVER
+        value: file
+      - key: SESSION_SECURE_COOKIE
+        value: "true"
+      - key: QUEUE_CONNECTION
+        value: sync
+      - key: MAIL_MAILER
+        value: log
+      - key: SHOP_REGISTRATION
+        value: "false"
+databases:
+  - name: aimeos-preview-db
+    plan: free
+    region: oregon
+    databaseName: aimeos_preview
+    user: aimeos_preview
+    ipAllowList: []
